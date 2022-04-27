@@ -11,7 +11,7 @@ app = Flask(__name__)
 
 
 @app.route("/predict", methods=["GET"])
-def predict_claim():
+def predict_loan():
     
     req_j=request.json
     test_data=req_j
@@ -30,24 +30,25 @@ def predict_claim():
 
     model_reg_int=pickle.load(open('model_reg_int', 'rb'))
     prediction_reg_int=model_reg_int.predict(test_df)
-    intr_rate=prediction_reg_int
+    intr_rate=prediction_reg_int[0]
 
 
 
-    if prediction_class_def==1:
+    if prediction_class_def[0]==1:
         loan='Loan will go default'
         model_class_rec = pickle.load(open('model_class_rec', 'rb'))
         prediction_class_rec=model_class_rec.predict(test_df)
-        if prediction_class_rec==1:
+        if prediction_class_rec[0]==1:
             model_reg_rec = pickle.load(open('model_reg_rec', 'rb'))
             prediction_reg_rec=model_reg_rec.predict(test_df)
-            recoveries=prediction_reg_rec
+            recoveries=prediction_reg_rec[0]
         else:
-            recoveries=0
-        outcome={'Loan Prediction: ':loan,'Recoveries: ':recoveries,'Predicted Interest Rate: ':intr_rate} 
+            recoveries='0'
+        
+        outcome={'Loan Prediction: ':loan,'Recoveries: ':str(recoveries),'Predicted Interest Rate: ':str(intr_rate)} 
     else:
         loan='Loan will not go default'
-        outcome={'Loan Prediction: ':loan,'Predicted Interest Rate: ':intr_rate} 
+        outcome={'Loan Prediction: ':loan,'Predicted Interest Rate: ':str(intr_rate)} 
 
     return json.dumps(outcome)
 	
