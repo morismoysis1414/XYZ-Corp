@@ -1,3 +1,8 @@
+app.py
+model_class_def
+model_class_rec
+model_reg_rec
+model_reg_int
 xyz_corp_venv
 /data/XYZCorp_LendingData.txt
 /data/XYZCorp_LendingData.xlsx
