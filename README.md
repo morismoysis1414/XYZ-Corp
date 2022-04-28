@@ -24,5 +24,5 @@ Before running app.py you should have run all the models for problem2_model and 
 ## Additional instructions
 The models include certain parameters that can be changed for different reasons. These are all explained in the comments of the models' code.
 
-## Where to find the database and problem
+## Where to find the database and problem.
 https://www.kaggle.com/datasets/sonujha090/xyzcorp-lendingdata
