@@ -29,7 +29,7 @@ import pickle
 from imblearn.under_sampling import RandomUnderSampler
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix,classification_report
-from sklearn.model_selection import RandomizedSearchCV
+from sklearn.model_selection import RandomizedSearchCV, GridSearchCV
 import sklearn.metrics as metrics
 from sklearn.metrics import mean_squared_error, mean_absolute_error
 from sklearn.preprocessing import LabelEncoder
