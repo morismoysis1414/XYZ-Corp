@@ -45,19 +45,29 @@ from sklearn.neural_network import MLPRegressor
 data_file='wrang_xyz_data.csv'
 
 #Splitting the data into different categories that make sense
-loan_data=['purpose','initial_list_status','term','revol_bal','loan_amnt','total_rev_hi_lim']
-emp_data=['emp_length','collections_12_mths_ex_med','acc_now_delinq','home_ownership','annual_inc','verification_status','address','delinq_2yrs','inq_last_6mths','open_acc','pub_rec','total_acc','earliest_cr_line','dti','tot_coll_amt','tot_cur_bal','revol_util']
-out=['last_pymnt_amnt','total_pymnt','total_rec_int','int_rate','out_prncp','total_rec_late_fee']
+loan_data=['purpose','initial_list_status','term','revol_bal','loan_amnt',
+'total_rev_hi_lim']
+emp_data=['emp_length','collections_12_mths_ex_med','acc_now_delinq',
+'home_ownership','annual_inc','verification_status','address','delinq_2yrs',
+'inq_last_6mths','open_acc','pub_rec','total_acc','earliest_cr_line','dti',
+'tot_coll_amt','tot_cur_bal','revol_util']
+out=['last_pymnt_amnt','total_pymnt','total_rec_int','int_rate','out_prncp',
+'total_rec_late_fee']
 
 #Getting the features that will be included in the model
 features=loan_data+emp_data+out
-#out_old=['last_pymnt_d','last_credit_pull_d','recoveries','collection_recovery_fee','last_pymnt_amnt','total_pymnt','total_rec_int','int_rate','out_prncp',total_rec_late_fee','default_ind']
+#out_old=['last_pymnt_d','last_credit_pull_d','recoveries',
+# 'collection_recovery_fee','last_pymnt_amnt','total_pymnt','total_rec_int',
+# 'int_rate','out_prncp',total_rec_late_fee','default_ind']
 
 #Classification model predicting default_ind for problem 1
-#The model's inputs are the data_file which should be set equal to the wrangled data file, the way to train test split
-#date does it according to  date, otherwise it is random and the algorithm used for the model 
+#The model's inputs are the data_file which should be set equal to the
+#  wrangled data file, the way to train test split
+#date does it according to  date, otherwise it is random and the algorithm
+#  used for the model 
 
-def get_model_class(data_file='wrang_xyz_data.csv',split='date',model_type='xgb'):
+def get_model_class(data_file='wrang_xyz_data.csv',split='date',
+model_type='xgb'):
     #Imporitng the wrangled csv file and including the useful columns for it
     pred_data=['issue_d','default_ind']
     df = pd.read_csv('data/'+data_file,usecols=features+pred_data)
@@ -73,16 +83,20 @@ def get_model_class(data_file='wrang_xyz_data.csv',split='date',model_type='xgb'
         X,y = undersample.fit_resample(X, y)
 
         #Splitting the data into train and test
-        X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.75, test_size=0.25)
+        X_train, X_test, y_train, y_test = train_test_split(X, y,
+         train_size=0.75, test_size=0.25)
 
         #One-hot Encoding
-        ohe_cols=['purpose','verification_status','home_ownership','initial_list_status','address','term']
+        ohe_cols=['purpose','verification_status','home_ownership',
+        'initial_list_status','address','term']
         ohe = OneHotEncoder(handle_unknown='ignore')
         ohe.fit(X_train[ohe_cols])
-        X_train_enc = pd.DataFrame(ohe.transform(X_train[ohe_cols]).toarray(),index=X_train.index)
+        X_train_enc = pd.DataFrame(ohe.transform(X_train[ohe_cols]).
+        toarray(),index=X_train.index)
         X_train=X_train.join(X_train_enc).drop(ohe_cols,axis=1)
         X_train.columns = X_train.columns.map(str)
-        X_test_enc = pd.DataFrame(ohe.transform(X_test[ohe_cols]).toarray(),index=X_test.index)
+        X_test_enc = pd.DataFrame(ohe.transform(X_test[ohe_cols]).
+        toarray(),index=X_test.index)
         X_test=X_test.join(X_test_enc).drop(ohe_cols,axis=1)
         X_test.columns = X_test.columns.map(str)
 
@@ -112,7 +126,8 @@ def get_model_class(data_file='wrang_xyz_data.csv',split='date',model_type='xgb'
 
     #Selecting xgboost algorithm
     if model_type=='xgb':
-        model_class = xgb.XGBClassifier(use_label_encoder=False,eval_metric='logloss')
+        model_class = xgb.XGBClassifier(use_label_encoder=False,
+        eval_metric='logloss')
         model_class.fit(X_train,np.ravel(y_train))
 
         #Plotting feature importance
@@ -142,7 +157,8 @@ def get_model_class(data_file='wrang_xyz_data.csv',split='date',model_type='xgb'
 model_class=get_model_class(split='random',model_type='xgb')
 
 #Classification model predicting zero or non-zero recoveries for problem 1
-#The model's inputs are the data_file which should be set equal to the wrangled data file
+#The model's inputs are the data_file which should be set equal to the
+#  wrangled data file
 #and the algorithm used for the model 
 
 def get_model_class(data_file='wrang_xyz_data.csv',model_type='xgb'):
@@ -169,22 +185,27 @@ def get_model_class(data_file='wrang_xyz_data.csv',model_type='xgb'):
     X,y = undersample.fit_resample(X, y)
 
     #Splitting the data into train and test
-    X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.75, test_size=0.25)
+    X_train, X_test, y_train, y_test = train_test_split(X, y,
+     train_size=0.75, test_size=0.25)
 
     #One-hot Encoding
-    ohe_cols=['purpose','verification_status','home_ownership','initial_list_status','address','term']
+    ohe_cols=['purpose','verification_status','home_ownership',
+    'initial_list_status','address','term']
     ohe = OneHotEncoder(handle_unknown='ignore')
     ohe.fit(X_train[ohe_cols])
-    X_train_enc = pd.DataFrame(ohe.transform(X_train[ohe_cols]).toarray(),index=X_train.index)
+    X_train_enc = pd.DataFrame(ohe.transform(X_train[ohe_cols]).
+    toarray(),index=X_train.index)
     X_train=X_train.join(X_train_enc).drop(ohe_cols,axis=1)
     X_train.columns = X_train.columns.map(str)
-    X_test_enc = pd.DataFrame(ohe.transform(X_test[ohe_cols]).toarray(),index=X_test.index)
+    X_test_enc = pd.DataFrame(ohe.transform(X_test[ohe_cols]).
+    toarray(),index=X_test.index)
     X_test=X_test.join(X_test_enc).drop(ohe_cols,axis=1)
     X_test.columns = X_test.columns.map(str)
 
     #Selecting xgboost algorithm
     if model_type=='xgb':
-        model_class = xgb.XGBClassifier(use_label_encoder=False,eval_metric='logloss')
+        model_class = xgb.XGBClassifier(use_label_encoder=False,
+        eval_metric='logloss')
         model_class.fit(X_train,np.ravel(y_train))
 
         #Plotting feature importance 
@@ -212,11 +233,14 @@ def get_model_class(data_file='wrang_xyz_data.csv',model_type='xgb'):
 model_class=get_model_class(model_type='xgb')
 
 #Regression model predicting recoveries for problem 1
-#The model's inputs are the data_file which should be set equal to the wrangled data file,
-#the algorithm used for the model, the value to be predicted and if hyperparameter tuning
+#The model's inputs are the data_file which should be set equal to
+#  the wrangled data file,
+#the algorithm used for the model, the value to be predicted and if
+#  hyperparameter tuning
 #investigation should be run on the model.
 
-def get_model_reg(data_file='wrang_xyz_data.csv',model_type='xgb',pred_value=['recoveries'],hyper_tune='no'):
+def get_model_reg(data_file='wrang_xyz_data.csv',model_type='xgb',
+pred_value=['recoveries'],hyper_tune='no'):
     #Imporitng the wrangled csv file and including the useful columns for it
     pred_data=['collection_recovery_fee']
     df = pd.read_csv('data/'+data_file,usecols=features+pred_data+pred_value)
@@ -232,16 +256,20 @@ def get_model_reg(data_file='wrang_xyz_data.csv',model_type='xgb',pred_value=['r
     y=df[pred_value[0]]
 
     #Splitting the data into train and test
-    X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.75, test_size=0.25)
+    X_train, X_test, y_train, y_test = train_test_split(X, y,
+     train_size=0.75, test_size=0.25)
 
     #One-hot Encoding
-    ohe_cols=['purpose','verification_status','home_ownership','initial_list_status','address','term']
+    ohe_cols=['purpose','verification_status','home_ownership',
+    'initial_list_status','address','term']
     ohe = OneHotEncoder(handle_unknown='ignore')
     ohe.fit(X_train[ohe_cols])
-    X_train_enc = pd.DataFrame(ohe.transform(X_train[ohe_cols]).toarray(),index=X_train.index)
+    X_train_enc = pd.DataFrame(ohe.transform(X_train[ohe_cols]).
+    toarray(),index=X_train.index)
     X_train=X_train.join(X_train_enc).drop(ohe_cols,axis=1)
     X_train.columns = X_train.columns.map(str)
-    X_test_enc = pd.DataFrame(ohe.transform(X_test[ohe_cols]).toarray(),index=X_test.index)
+    X_test_enc = pd.DataFrame(ohe.transform(X_test[ohe_cols]).
+    toarray(),index=X_test.index)
     X_test=X_test.join(X_test_enc).drop(ohe_cols,axis=1)
     X_test.columns = X_test.columns.map(str)
    
@@ -259,7 +287,8 @@ def get_model_reg(data_file='wrang_xyz_data.csv',model_type='xgb',pred_value=['r
             'colsample_bylevel': np.arange(0.4, 1.0, 0.1),
             'n_estimators': [100, 500, 1000]}
 
-            #Running xgboost model for different parameter combinations based on r-sqaured
+            #Running xgboost model for different parameter 
+            # combinations based on r-sqaured
             model_reg = xgb.XGBRegressor()
 
             model_reg = RandomizedSearchCV(estimator=model_reg,
@@ -282,7 +311,8 @@ def get_model_reg(data_file='wrang_xyz_data.csv',model_type='xgb',pred_value=['r
            'n_estimators': [100, 500, 1000],
            'colsample_bytree': [0.3, 0.7]}
 
-           #Running xgboost model for different parameter combinations based on negative mean squared error
+           #Running xgboost model for different parameter combinations 
+           # based on negative mean squared error
             model_reg = xgb.XGBRegressor() 
             model_reg = GridSearchCV(estimator=model_reg, 
                             param_grid=params,
@@ -297,7 +327,8 @@ def get_model_reg(data_file='wrang_xyz_data.csv',model_type='xgb',pred_value=['r
 
         #Runs the model normally
         else:
-            model_reg = xgb.XGBRegressor() #max_depth=3,learning_rate=0.01,colsample_bytree=0.7,n_estimators=100
+            model_reg = xgb.XGBRegressor() #max_depth=3,learning_rate=0.01,
+            #colsample_bytree=0.7,n_estimators=100
             model_reg.fit(X_train,np.ravel(y_train))
 
     #Selecting linear regression algorithm
@@ -340,4 +371,5 @@ def get_model_reg(data_file='wrang_xyz_data.csv',model_type='xgb',pred_value=['r
     return model_reg
 
 #Running the function    
-model_reg=get_model_reg(model_type='xgb',pred_value=['recoveries'],hyper_tune='no')
+model_reg=get_model_reg(model_type='xgb',pred_value=['recoveries'],
+hyper_tune='no')

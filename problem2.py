@@ -150,7 +150,8 @@ model_type='xgb',hyper_tune='no'):
             'n_estimators': [100, 500, 1000]}
 
             #Running xgboost model for different parameter combinations based on accuracy
-            model_class = xgb.XGBClassifier(use_label_encoder=False,eval_metric='logloss')
+            model_class = xgb.XGBClassifier(use_label_encoder=False,
+            eval_metric='logloss')
 
             model_class = RandomizedSearchCV(estimator=model_class,
                             param_distributions=params,
@@ -166,7 +167,11 @@ model_type='xgb',hyper_tune='no'):
         #Runs the model normally
         else:
 
-            model_class = xgb.XGBClassifier() #use_label_encoder=False,eval_metric='logloss',subsample= 0.7999999999999999, n_estimators= 500, max_depth= 15, learning_rate= 0.01, colsample_bytree= 0.5, colsample_bylevel= 0.4
+            model_class = xgb.XGBClassifier() #use_label_encoder=False,
+            #eval_metric='logloss',subsample= 0.7999999999999999,
+            #  n_estimators= 500,
+            #  max_depth= 15, learning_rate= 0.01, colsample_bytree= 0.5,
+            #  colsample_bylevel= 0.4
             model_class.fit(X_train,np.ravel(y_train))
 
            #Plotting feature importance         
@@ -194,15 +199,18 @@ model_type='xgb',hyper_tune='no'):
 #Running the function
 model_class=get_model_class(split='random',model_type='xgb',hyper_tune='no')
 
-#Dumping the model to be used for the app.py file. Comment out only if intending to run app.py
+#Dumping the model to be used for the app.py file. Comment out only if 
+# intending to run app.py
 #pickle.dump(model_class,open('model_class_def','wb'))
 
 #Classification model predicting zero or non-zero recoveries for problem 2
-#The model's inputs are the data_file which should be set equal to the wrangled data file
+#The model's inputs are the data_file which should be set equal to
+#  the wrangled data file
 #the algorithm used for the model and if hyperparameter tuning
 #investigation should be run on the model.
 
-def get_model_class(data_file='wrang_xyz_data.csv',model_type='xgb',hyper_tune='no'):
+def get_model_class(data_file='wrang_xyz_data.csv',model_type='xgb',
+hyper_tune='no'):
     #Imporitng the wrangled csv file and including the useful columns for it
     pred_data=['default_ind','recoveries','collection_recovery_fee']
     df = pd.read_csv('data/'+data_file,usecols=features+pred_data)
@@ -225,16 +233,20 @@ def get_model_class(data_file='wrang_xyz_data.csv',model_type='xgb',hyper_tune='
     X,y = undersample.fit_resample(X, y)
 
     #Splitting the data into train and test
-    X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.75, test_size=0.25)
+    X_train, X_test, y_train, y_test = train_test_split(X, y,
+     train_size=0.75, test_size=0.25)
 
     #One-hot Encoding
-    ohe_cols=['purpose','verification_status','home_ownership','initial_list_status','address','term']
+    ohe_cols=['purpose','verification_status','home_ownership',
+    'initial_list_status','address','term']
     ohe = OneHotEncoder(handle_unknown='ignore')
     ohe.fit(X_train[ohe_cols])
-    X_train_enc = pd.DataFrame(ohe.transform(X_train[ohe_cols]).toarray(),index=X_train.index)
+    X_train_enc = pd.DataFrame(ohe.transform(X_train[ohe_cols]).
+    toarray(),index=X_train.index)
     X_train=X_train.join(X_train_enc).drop(ohe_cols,axis=1)
     X_train.columns = X_train.columns.map(str)
-    X_test_enc = pd.DataFrame(ohe.transform(X_test[ohe_cols]).toarray(),index=X_test.index)
+    X_test_enc = pd.DataFrame(ohe.transform(X_test[ohe_cols]).
+    toarray(),index=X_test.index)
     X_test=X_test.join(X_test_enc).drop(ohe_cols,axis=1)
     X_test.columns = X_test.columns.map(str)
 
@@ -253,7 +265,8 @@ def get_model_class(data_file='wrang_xyz_data.csv',model_type='xgb',hyper_tune='
             'n_estimators': [100, 500, 1000]}
             
             #Running xgboost model for different parameter combinations based on accuracy
-            model_class = xgb.XGBClassifier(use_label_encoder=False,eval_metric='logloss')
+            model_class = xgb.XGBClassifier(use_label_encoder=False,
+            eval_metric='logloss')
 
             model_class = RandomizedSearchCV(estimator=model_class,
                             param_distributions=params,
@@ -268,7 +281,10 @@ def get_model_class(data_file='wrang_xyz_data.csv',model_type='xgb',hyper_tune='
 
         #Runs the model normally
         else:
-            model_class = xgb.XGBClassifier(use_label_encoder=False,eval_metric='logloss',subsample= 0.6, n_estimators= 500, max_depth= 5, learning_rate= 0.01, colsample_bytree= 0.7, colsample_bylevel= 0.7999999999999999) 
+            model_class = xgb.XGBClassifier(use_label_encoder=False,
+            eval_metric='logloss',subsample= 0.6, n_estimators= 500,
+             max_depth= 5, learning_rate= 0.01, colsample_bytree= 0.7,
+              colsample_bylevel= 0.7999999999999999) 
             model_class.fit(X_train,np.ravel(y_train))
 
             #Plotting feature importance 
@@ -296,15 +312,19 @@ def get_model_class(data_file='wrang_xyz_data.csv',model_type='xgb',hyper_tune='
 #Running the function
 model_class=get_model_class(model_type='xgb',hyper_tune='no')
 
-#Dumping the model to be used for the app.py file. Comment out only if intending to run app.py
+#Dumping the model to be used for the app.py file. Comment out only
+#  if intending to run app.py
 #pickle.dump(model_class,open('model_class_rec','wb'))
 
 #Regression model predicting recoveries for problem 2
-#The model's inputs are the data_file which should be set equal to the wrangled data file,
-#the algorithm used for the model, the value to be predicted and if hyperparameter tuning
+#The model's inputs are the data_file which should be set equal to
+#  the wrangled data file,
+#the algorithm used for the model, the value to be predicted and if
+#  hyperparameter tuning
 #investigation should be run on the model.
 
-def get_model_reg(data_file='wrang_xyz_data.csv',model_type='xgb',pred_value=['recoveries'],hyper_tune='no'):
+def get_model_reg(data_file='wrang_xyz_data.csv',model_type='xgb',
+pred_value=['recoveries'],hyper_tune='no'):
     #Imporitng the wrangled csv file and including the useful columns for it
     pred_data=['collection_recovery_fee']
     df = pd.read_csv('data/'+data_file,usecols=features+pred_data+pred_value) 
@@ -320,16 +340,20 @@ def get_model_reg(data_file='wrang_xyz_data.csv',model_type='xgb',pred_value=['r
     y=df[pred_value[0]]
 
     #Splitting the data into train and test
-    X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.75, test_size=0.25)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.75,
+     test_size=0.25)
 
     #One-hot Encoding
-    ohe_cols=['purpose','verification_status','home_ownership','initial_list_status','address','term']
+    ohe_cols=['purpose','verification_status','home_ownership',
+    'initial_list_status','address','term']
     ohe = OneHotEncoder(handle_unknown='ignore')
     ohe.fit(X_train[ohe_cols])
-    X_train_enc = pd.DataFrame(ohe.transform(X_train[ohe_cols]).toarray(),index=X_train.index)
+    X_train_enc = pd.DataFrame(ohe.transform(X_train[ohe_cols]).toarray(),
+    index=X_train.index)
     X_train=X_train.join(X_train_enc).drop(ohe_cols,axis=1)
     X_train.columns = X_train.columns.map(str)
-    X_test_enc = pd.DataFrame(ohe.transform(X_test[ohe_cols]).toarray(),index=X_test.index)
+    X_test_enc = pd.DataFrame(ohe.transform(X_test[ohe_cols]).toarray(),
+    index=X_test.index)
     X_test=X_test.join(X_test_enc).drop(ohe_cols,axis=1)
     X_test.columns = X_test.columns.map(str)
    
@@ -347,7 +371,8 @@ def get_model_reg(data_file='wrang_xyz_data.csv',model_type='xgb',pred_value=['r
             'colsample_bylevel': np.arange(0.4, 1.0, 0.1),
             'n_estimators': [100, 500, 1000]}
 
-            #Running xgboost model for different parameter combinations based on r-sqaured
+            #Running xgboost model for different parameter combinations
+            #  based on r-sqaured
             model_reg = xgb.XGBRegressor() 
 
             model_reg = RandomizedSearchCV(estimator=model_reg,
@@ -368,7 +393,8 @@ def get_model_reg(data_file='wrang_xyz_data.csv',model_type='xgb',pred_value=['r
            'n_estimators': [100, 500, 1000],
            'colsample_bytree': [0.3, 0.7]}
 
-           #Running xgboost model for different parameter combinations based on negative mean squared error
+           #Running xgboost model for different parameter combinations
+           #  based on negative mean squared error
             model_reg = xgb.XGBRegressor() 
             model_reg = GridSearchCV(estimator=model_reg, 
                             param_grid=params,
@@ -386,7 +412,10 @@ def get_model_reg(data_file='wrang_xyz_data.csv',model_type='xgb',pred_value=['r
         
         #Runs the model normally
         else:
-            model_reg = xgb.XGBRegressor(max_depth=5,learning_rate=0.01,colsample_bytree=0.6,n_estimators=500,subsample= 0.8999999999999999,colsample_bylevel=0.4) #max_depth=3,learning_rate=0.01,colsample_bytree=0.7,n_estimators=100
+            model_reg = xgb.XGBRegressor(max_depth=5,learning_rate=0.01,
+            colsample_bytree=0.6,n_estimators=500,
+            subsample= 0.8999999999999999,colsample_bylevel=0.4) 
+            #max_depth=3,learning_rate=0.01,colsample_bytree=0.7,n_estimators=100
             model_reg.fit(X_train,np.ravel(y_train))
 
     #Selecting linear regression algorithm
@@ -430,16 +459,21 @@ def get_model_reg(data_file='wrang_xyz_data.csv',model_type='xgb',pred_value=['r
     return model_reg
 
 #Running the function    
-model_reg=get_model_reg(model_type='xgb',pred_value=['recoveries'],hyper_tune='no')
+model_reg=get_model_reg(model_type='xgb',pred_value=['recoveries'],
+hyper_tune='no')
 
-#Dumping the model to be used for the app.py file. Comment out only if intending to run app.py
+#Dumping the model to be used for the app.py file. Comment out only
+#  if intending to run app.py
 #pickle.dump(model_reg,open('model_reg_rec','wb'))
 
 #Regression model predicting intrest rate for problem 2
-#The model's inputs are the data_file which should be set equal to the wrangled data file,
-#the algorithm used for the model, the value to be predicted and if hyperparameter tuning
+#The model's inputs are the data_file which should be set equal to
+#  the wrangled data file,
+#the algorithm used for the model, the value to be predicted and if
+#  hyperparameter tuning
 #investigation should be run on the model.
-def get_model_reg(data_file='wrang_xyz_data.csv',model_type='xgb',pred_value=['int_rate'],hyper_tune='no'):
+def get_model_reg(data_file='wrang_xyz_data.csv',model_type='xgb',
+pred_value=['int_rate'],hyper_tune='no'):
     #Imporitng the wrangled csv file and including the useful columns for it
     df = pd.read_csv('data/'+data_file,usecols=features+pred_value) 
 
@@ -448,16 +482,20 @@ def get_model_reg(data_file='wrang_xyz_data.csv',model_type='xgb',pred_value=['i
     y=df[pred_value[0]]
 
     #Splitting the data into train and test
-    X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.75, test_size=0.25)
+    X_train, X_test, y_train, y_test = train_test_split(X, y,
+     train_size=0.75, test_size=0.25)
 
     #One-hot Encoding
-    ohe_cols=['purpose','verification_status','home_ownership','initial_list_status','term']
+    ohe_cols=['purpose','verification_status','home_ownership',
+    'initial_list_status','term']
     ohe = OneHotEncoder(handle_unknown='ignore')
     ohe.fit(X_train[ohe_cols])
-    X_train_enc = pd.DataFrame(ohe.transform(X_train[ohe_cols]).toarray(),index=X_train.index)
+    X_train_enc = pd.DataFrame(ohe.transform(X_train[ohe_cols])
+    .toarray(),index=X_train.index)
     X_train=X_train.join(X_train_enc).drop(ohe_cols,axis=1)
     X_train.columns = X_train.columns.map(str)
-    X_test_enc = pd.DataFrame(ohe.transform(X_test[ohe_cols]).toarray(),index=X_test.index)
+    X_test_enc = pd.DataFrame(ohe.transform(X_test[ohe_cols])
+    .toarray(),index=X_test.index)
     X_test=X_test.join(X_test_enc).drop(ohe_cols,axis=1)
     X_test.columns = X_test.columns.map(str)
 
@@ -476,7 +514,8 @@ def get_model_reg(data_file='wrang_xyz_data.csv',model_type='xgb',pred_value=['i
             'colsample_bylevel': np.arange(0.4, 1.0, 0.1),
             'n_estimators': [100, 500, 1000]}
 
-            #Running xgboost model for different parameter combinations based on r-sqaured
+            #Running xgboost model for different parameter 
+            # combinations based on r-sqaured
             model_reg = xgb.XGBRegressor() #seed=20
 
             model_reg = RandomizedSearchCV(estimator=model_reg,
@@ -499,7 +538,8 @@ def get_model_reg(data_file='wrang_xyz_data.csv',model_type='xgb',pred_value=['i
            'n_estimators': [100, 500, 1000],
            'colsample_bytree': [0.3, 0.7]}
 
-           #Running xgboost model for different parameter combinations based on negative mean squared error
+           #Running xgboost model for different parameter combinations
+           #  based on negative mean squared error
             model_reg = xgb.XGBRegressor()
             model_reg = GridSearchCV(estimator=model_reg, 
                             param_grid=params,
@@ -514,7 +554,8 @@ def get_model_reg(data_file='wrang_xyz_data.csv',model_type='xgb',pred_value=['i
 
         #Runs the model normall
         else:
-            model_reg = xgb.XGBRegressor() #max_depth=3,learning_rate=0.01,colsample_bytree=0.7,n_estimators=100
+            model_reg = xgb.XGBRegressor() #max_depth=3,learning_rate=0.01
+            #,colsample_bytree=0.7,n_estimators=100
             model_reg.fit(X_train,np.ravel(y_train))
 
     #Selecting linear regression algorithm
@@ -557,7 +598,9 @@ def get_model_reg(data_file='wrang_xyz_data.csv',model_type='xgb',pred_value=['i
     return model_reg
 
 #Running the function     
-model_reg=get_model_reg(model_type='xgb',pred_value=['int_rate'],hyper_tune='no')
+model_reg=get_model_reg(model_type='xgb',pred_value=['int_rate'],
+hyper_tune='no')
 
-#Dumping the model to be used for the app.py file. Comment out only if intending to run app.py
+#Dumping the model to be used for the app.py file. 
+# Comment out only if intending to run app.py
 #pickle.dump(model_reg,open('model_reg_int','wb'))

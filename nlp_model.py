@@ -32,20 +32,24 @@ from sklearn.naive_bayes import MultinomialNB
 #Getting the csv file's name with the wrangled data
 df=pd.read_csv('data/xyz_corp_lending_data.csv',sep='\t')
 
-#Including only the non-na data for desc and getting only the desc and purpose columns
+#Including only the non-na data for desc and getting only the
+#  desc and purpose columns
 df=df[df['desc'].isna()==False][['desc','purpose']]
 
 #Encoding the purpose values
-#df[['purpose']] = df[['purpose']].astype('category').apply(lambda x: x.cat.codes)
+#df[['purpose']] = df[['purpose']].astype('category').
+# apply(lambda x: x.cat.codes)
 
 #Using only the 2 highest purpose values
 #df=df[(df['purpose']==2)|(df['purpose']==1)]
 #df['purpose']=df['purpose'].replace(2,0)
 
 #Improving the desc values. Commented as did not make any difference
-#df['desc']=df['desc'].apply(lambda x: x.split('>')[1][:-4] if x[-4:]=='<br>' else x)
+#df['desc']=df['desc'].apply(lambda x: x.split('>')[1][:-4]
+#  if x[-4:]=='<br>' else x)
 
-#A function that takes in a string of text, then remove all punctuation, removes all stopwords, returns a list of the cleaned text
+#A function that takes in a string of text, then remove all punctuation,
+#  removes all stopwords, returns a list of the cleaned text
 def text_process(mess):
 
     # Check characters to see if they are in punctuation
@@ -55,11 +59,15 @@ def text_process(mess):
     nopunc = ''.join(nopunc)
     
     # Now just remove any stopwords (very common words)
-    return [word for word in nopunc.split() if word.lower() not in stopwords.words('english')]
+    return [word for word in nopunc.split() if word.
+    lower() not in stopwords.words('english')]
 
-    #NLP model predicting loan purpose based on loan description given by the borrower.
-#The model's input is the method used for NLP. If set to initial it just uses count_vectorizer
-#if set to anything else it also uses a TfidfTransformer. It is observed that the model runs better
+    #NLP model predicting loan purpose based on loan description
+    #  given by the borrower.
+#The model's input is the method used for NLP. If set to initial
+#  it just uses count_vectorizer
+#if set to anything else it also uses a TfidfTransformer. It is
+#  observed that the model runs better
 #with the 'initial' input.
 
 def get_model_nlp(method='initial'):
@@ -78,7 +86,8 @@ def get_model_nlp(method='initial'):
         X = cv.fit_transform(X)
 
         #Splitting the data into train and test
-        X_train, X_test, y_train, y_test = train_test_split(X, y,test_size=0.3)
+        X_train, X_test, y_train, y_test = train_test_split(X,
+         y,test_size=0.3)
 
         #Using the Naive-Base Binomial algorith for prediction
         model_nlp = MultinomialNB()
@@ -92,7 +101,8 @@ def get_model_nlp(method='initial'):
         ('classifier', MultinomialNB()),]) 
 
         #Splitting the data into train and test
-        X_train, X_test, y_train, y_test = train_test_split(X, y,test_size=0.3)
+        X_train, X_test, y_train, y_test = train_test_split(X,
+         y,test_size=0.3)
 
         #Using the Naive-Base Binomial algorith for prediction
         model_nlp.fit(X_train,y_train)
