@@ -1,5 +1,5 @@
 # Natural Language Processing (NLP) Model
-#Predicts loan purspose based on loan description given by the borrower
+#A python file that predicts loan purspose based on loan description given by the borrower
 
 #Imports
 

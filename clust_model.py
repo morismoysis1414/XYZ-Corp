@@ -1,5 +1,5 @@
 # Clustering Model
-#Predicts loan grade for Problem 2
+#A python file that predicts loan grade for Problem 2
 
 #Imports
 

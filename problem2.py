@@ -1,6 +1,6 @@
 
 # Problem 2 Model
-#A notebook containing the models for Problem 2. A credit risk analyst
+#A python file containing the models for Problem 2. A credit risk analyst
 #is using previous loan data to predict if a new loan from a new or 
 #existing customer will go default, calculate its recoveries if default
 #and calculate an interest rate for the loan.
