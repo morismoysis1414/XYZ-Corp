@@ -454,7 +454,7 @@ pred_value=['recoveries'],hyper_tune='no'):
     print("RMSE:", rmse)
     print("R-Squared:", r2)
     print(error)
-    print('/n')
+    print('\n')
 
     return model_reg
 
