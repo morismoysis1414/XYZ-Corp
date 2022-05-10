@@ -82,7 +82,7 @@ def get_model_nlp(method='initial'):
 
     if method=='initial':
         #Vectorizing the data
-        cv = CountVectorizer()
+        cv = CountVectorizer(analyzer=text_process)
         X = cv.fit_transform(X)
 
         #Splitting the data into train and test
