@@ -48,9 +48,9 @@ data_file='wrang_xyz_data.csv'
 loan_data=['purpose','initial_list_status','term','revol_bal','loan_amnt',
 'total_rev_hi_lim']
 emp_data=['emp_length','collections_12_mths_ex_med','acc_now_delinq',
-'home_ownership','annual_inc','verification_status','address','delinq_2yrs',
+'home_ownership','annual_inc','verification_status','delinq_2yrs',
 'inq_last_6mths','open_acc','pub_rec','total_acc','earliest_cr_line','dti',
-'tot_coll_amt','tot_cur_bal','revol_util']
+'tot_coll_amt','tot_cur_bal','revol_util'] #address
 out=['last_pymnt_amnt','total_pymnt','total_rec_int','int_rate','out_prncp',
 'total_rec_late_fee']
 
@@ -67,7 +67,7 @@ features=loan_data+emp_data+out
 #  used for the model 
 
 def get_model_class(data_file='wrang_xyz_data.csv',split='date',
-model_type='xgb'):
+model_type='xgb',sampling='no'):
     #Imporitng the wrangled csv file and including the useful columns for it
     pred_data=['issue_d','default_ind']
     df = pd.read_csv('data/'+data_file,usecols=features+pred_data)
@@ -78,17 +78,29 @@ model_type='xgb'):
         X=df.drop(['default_ind','issue_d'],axis=1)
         y=df['default_ind']
 
+        if sampling=='yes':
         #Undersampling the data to create a more balanced dataset
-        undersample = RandomUnderSampler(sampling_strategy='majority')
-        X,y = undersample.fit_resample(X, y)
+            undersample = RandomUnderSampler(sampling_strategy='majority')
+            X,y = undersample.fit_resample(X, y)
+            
+            #Splitting the data into train and test
+            X_train, X_test, y_train, y_test = train_test_split(X, y,
+            train_size=0.75, test_size=0.25)
+            scale_pos_ratio=1
 
-        #Splitting the data into train and test
-        X_train, X_test, y_train, y_test = train_test_split(X, y,
-         train_size=0.75, test_size=0.25)
+        else:
+            #Splitting the data into train and test
+            X_train, X_test, y_train, y_test = train_test_split(X, y,
+            train_size=0.75, test_size=0.25)
+
+            scale_pos_ratio=len(y_train[y_train==0])/len(y_train[y_train==1])
+            #print(scale_pos_ratio)
+            sqrt_scale_pos_ratio=np.sqrt(scale_pos_ratio)
+            scale_pos_ratio=(0.15*scale_pos_ratio+0.85*sqrt_scale_pos_ratio)
 
         #One-hot Encoding
         ohe_cols=['purpose','verification_status','home_ownership',
-        'initial_list_status','address','term']
+        'initial_list_status','term'] #address
         ohe = OneHotEncoder(handle_unknown='ignore')
         ohe.fit(X_train[ohe_cols])
         X_train_enc = pd.DataFrame(ohe.transform(X_train[ohe_cols]).
@@ -119,15 +131,22 @@ model_type='xgb'):
         X_test,y_test = undersample.fit_resample(X_test, y_test)
 
         #One-hot Encoding
+        ohe_cols=['purpose','verification_status','home_ownership',
+        'initial_list_status','term'] #address
         ohe = OneHotEncoder(handle_unknown='ignore')
-        ohe.fit(X_train)
-        X_train = ohe.transform(X_train)
-        X_test = ohe.transform(X_test)
+        ohe.fit(X_train[ohe_cols])
+        X_train_enc = pd.DataFrame(ohe.transform(X_train[ohe_cols]).
+        toarray(),index=X_train.index)
+        X_train=X_train.join(X_train_enc).drop(ohe_cols,axis=1)
+        X_train.columns = X_train.columns.map(str)
+        X_test_enc = pd.DataFrame(ohe.transform(X_test[ohe_cols]).
+        toarray(),index=X_test.index)
+        X_test=X_test.join(X_test_enc).drop(ohe_cols,axis=1)
+        X_test.columns = X_test.columns.map(str)
 
     #Selecting xgboost algorithm
     if model_type=='xgb':
-        model_class = xgb.XGBClassifier(use_label_encoder=False,
-        eval_metric='logloss')
+        model_class = xgb.XGBClassifier(scale_pos_weight=scale_pos_ratio)
         model_class.fit(X_train,np.ravel(y_train))
 
         #Plotting feature importance
@@ -154,14 +173,14 @@ model_type='xgb'):
     return model_class
 
 #Running the function
-model_class=get_model_class(split='random',model_type='xgb')
+model_class=get_model_class(split='random',model_type='xgb',sampling='no')
 
 #Classification model predicting zero or non-zero recoveries for problem 1
 #The model's inputs are the data_file which should be set equal to the
 #  wrangled data file
 #and the algorithm used for the model 
 
-def get_model_class(data_file='wrang_xyz_data.csv',model_type='xgb'):
+def get_model_class(data_file='wrang_xyz_data.csv',model_type='xgb',sampling='no'):
     #Imporitng the wrangled csv file and including the useful columns for it
     pred_data=['default_ind','recoveries','collection_recovery_fee']
     df = pd.read_csv('data/'+data_file,usecols=features+pred_data)
@@ -180,17 +199,29 @@ def get_model_class(data_file='wrang_xyz_data.csv',model_type='xgb'):
     X=df.drop('recoveries',axis=1)
     y=df['recoveries']
 
-    #Undersampling the data to create a more balanced dataset  
-    undersample = RandomUnderSampler(sampling_strategy='majority')
-    X,y = undersample.fit_resample(X, y)
+    if sampling=='yes':
+    #Undersampling the data to create a more balanced dataset
+        undersample = RandomUnderSampler(sampling_strategy='majority')
+        X,y = undersample.fit_resample(X, y)
+        
+        #Splitting the data into train and test
+        X_train, X_test, y_train, y_test = train_test_split(X, y,
+        train_size=0.75, test_size=0.25)
+        scale_pos_ratio=1
 
-    #Splitting the data into train and test
-    X_train, X_test, y_train, y_test = train_test_split(X, y,
-     train_size=0.75, test_size=0.25)
+    else:
+        #Splitting the data into train and test
+        X_train, X_test, y_train, y_test = train_test_split(X, y,
+        train_size=0.75, test_size=0.25)
+
+        scale_pos_ratio=len(y_train[y_train==0])/len(y_train[y_train==1])
+        #print(scale_pos_ratio)
+        sqrt_scale_pos_ratio=np.sqrt(scale_pos_ratio)
+        scale_pos_ratio=(0.15*scale_pos_ratio+0.85*sqrt_scale_pos_ratio)
 
     #One-hot Encoding
     ohe_cols=['purpose','verification_status','home_ownership',
-    'initial_list_status','address','term']
+    'initial_list_status','term'] #address
     ohe = OneHotEncoder(handle_unknown='ignore')
     ohe.fit(X_train[ohe_cols])
     X_train_enc = pd.DataFrame(ohe.transform(X_train[ohe_cols]).
@@ -204,8 +235,7 @@ def get_model_class(data_file='wrang_xyz_data.csv',model_type='xgb'):
 
     #Selecting xgboost algorithm
     if model_type=='xgb':
-        model_class = xgb.XGBClassifier(use_label_encoder=False,
-        eval_metric='logloss')
+        model_class = xgb.XGBClassifier(scale_pos_weight=scale_pos_ratio)
         model_class.fit(X_train,np.ravel(y_train))
 
         #Plotting feature importance 
@@ -230,7 +260,7 @@ def get_model_class(data_file='wrang_xyz_data.csv',model_type='xgb'):
 
     return model_class
 #Running the function
-model_class=get_model_class(model_type='xgb')
+model_class=get_model_class(model_type='xgb',sampling='no')
 
 #Regression model predicting recoveries for problem 1
 #The model's inputs are the data_file which should be set equal to
@@ -261,7 +291,7 @@ pred_value=['recoveries'],hyper_tune='no'):
 
     #One-hot Encoding
     ohe_cols=['purpose','verification_status','home_ownership',
-    'initial_list_status','address','term']
+    'initial_list_status','term'] #address
     ohe = OneHotEncoder(handle_unknown='ignore')
     ohe.fit(X_train[ohe_cols])
     X_train_enc = pd.DataFrame(ohe.transform(X_train[ohe_cols]).

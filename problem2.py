@@ -53,9 +53,9 @@ data_file='wrang_xyz_data.csv'
 #Splitting the data into different categories that make sense
 loan_data=['purpose','initial_list_status','term','loan_amnt']
 emp_data=['emp_length','collections_12_mths_ex_med','acc_now_delinq',
-'home_ownership','annual_inc','verification_status','address',
+'home_ownership','annual_inc','verification_status',
 'delinq_2yrs','inq_last_6mths','open_acc','pub_rec','total_acc',
-'earliest_cr_line','dti','tot_cur_bal','tot_coll_amt']
+'earliest_cr_line','dti','tot_cur_bal','tot_coll_amt'] #address
 features=loan_data+emp_data
 
 #The following inputs are left out as they are only useful for problem 1.
@@ -72,7 +72,7 @@ features=loan_data+emp_data
 #investigation should be run on the model.
 
 def get_model_class(data_file='wrang_xyz_data.csv',split='date',
-model_type='xgb',hyper_tune='no'):
+model_type='xgb',hyper_tune='no',sampling='no'):
     #Imporitng the wrangled csv file and including the useful columns for it
     pred_data=['issue_d','default_ind']
     df = pd.read_csv('data/'+data_file,usecols=features+pred_data)
@@ -83,16 +83,29 @@ model_type='xgb',hyper_tune='no'):
         X=df.drop(['default_ind','issue_d'],axis=1)
         y=df['default_ind']
         
+        if sampling=='yes':
         #Undersampling the data to create a more balanced dataset
-        undersample = RandomUnderSampler(sampling_strategy='majority')
-        X,y = undersample.fit_resample(X, y)
+            undersample = RandomUnderSampler(sampling_strategy='majority')
+            X,y = undersample.fit_resample(X, y)
+            
+            #Splitting the data into train and test
+            X_train, X_test, y_train, y_test = train_test_split(X, y,
+             train_size=0.75, test_size=0.25)
+            scale_pos_ratio=1
 
-        #Splitting the data into train and test
-        X_train, X_test, y_train, y_test = train_test_split(X, y,
-         train_size=0.75, test_size=0.25)
+        else:
+            #Splitting the data into train and test
+            X_train, X_test, y_train, y_test = train_test_split(X, y,
+             train_size=0.75, test_size=0.25)
+
+            scale_pos_ratio=len(y_train[y_train==0])/len(y_train[y_train==1])
+            #print(scale_pos_ratio)
+            sqrt_scale_pos_ratio=np.sqrt(scale_pos_ratio)
+            scale_pos_ratio=(0.15*scale_pos_ratio+0.85*sqrt_scale_pos_ratio)
+
         #One-hot Encoding
         ohe_cols=['purpose','verification_status','home_ownership',
-        'initial_list_status','address','term']
+        'initial_list_status','term'] #adress
         ohe = OneHotEncoder(handle_unknown='ignore')
         ohe.fit(X_train[ohe_cols])
         X_train_enc = pd.DataFrame(ohe.transform(X_train[ohe_cols]).
@@ -123,7 +136,7 @@ model_type='xgb',hyper_tune='no'):
 
         #One-hot Encoding
         ohe_cols=['purpose','verification_status','home_ownership',
-        'initial_list_status','address','term']
+        'initial_list_status','term'] #address
         ohe = OneHotEncoder(handle_unknown='ignore')
         ohe.fit(X_train[ohe_cols])
         X_train_enc = pd.DataFrame(ohe.transform(X_train[ohe_cols]).toarray()
@@ -167,7 +180,7 @@ model_type='xgb',hyper_tune='no'):
         #Runs the model normally
         else:
 
-            model_class = xgb.XGBClassifier() #use_label_encoder=False,
+            model_class = xgb.XGBClassifier(scale_pos_weight=scale_pos_ratio) #use_label_encoder=False,
             #eval_metric='logloss',subsample= 0.7999999999999999,
             #  n_estimators= 500,
             #  max_depth= 15, learning_rate= 0.01, colsample_bytree= 0.5,
@@ -197,7 +210,7 @@ model_type='xgb',hyper_tune='no'):
     return model_class
 
 #Running the function
-model_class=get_model_class(split='random',model_type='xgb',hyper_tune='no')
+model_class=get_model_class(split='random',model_type='xgb',hyper_tune='no',sampling='no')
 
 #Dumping the model to be used for the app.py file. Comment out only if 
 # intending to run app.py
@@ -210,7 +223,7 @@ model_class=get_model_class(split='random',model_type='xgb',hyper_tune='no')
 #investigation should be run on the model.
 
 def get_model_class(data_file='wrang_xyz_data.csv',model_type='xgb',
-hyper_tune='no'):
+hyper_tune='no',sampling='no'):
     #Imporitng the wrangled csv file and including the useful columns for it
     pred_data=['default_ind','recoveries','collection_recovery_fee']
     df = pd.read_csv('data/'+data_file,usecols=features+pred_data)
@@ -228,17 +241,29 @@ hyper_tune='no'):
     X=df.drop('recoveries',axis=1)
     y=df['recoveries']
 
-    #Undersampling the data to create a more balanced dataset    
-    undersample = RandomUnderSampler(sampling_strategy='majority')
-    X,y = undersample.fit_resample(X, y)
+    if sampling=='yes':
+    #Undersampling the data to create a more balanced dataset
+        undersample = RandomUnderSampler(sampling_strategy='majority')
+        X,y = undersample.fit_resample(X, y)
+        
+        #Splitting the data into train and test
+        X_train, X_test, y_train, y_test = train_test_split(X, y,
+         train_size=0.75, test_size=0.25)
+        scale_pos_ratio=1
 
-    #Splitting the data into train and test
-    X_train, X_test, y_train, y_test = train_test_split(X, y,
-     train_size=0.75, test_size=0.25)
+    else:
+        #Splitting the data into train and test
+        X_train, X_test, y_train, y_test = train_test_split(X, y,
+         train_size=0.75, test_size=0.25)
+
+        scale_pos_ratio=len(y_train[y_train==0])/len(y_train[y_train==1])
+        #print(scale_pos_ratio)
+        sqrt_scale_pos_ratio=np.sqrt(scale_pos_ratio)
+        scale_pos_ratio=(0.15*scale_pos_ratio+0.85*sqrt_scale_pos_ratio)
 
     #One-hot Encoding
     ohe_cols=['purpose','verification_status','home_ownership',
-    'initial_list_status','address','term']
+    'initial_list_status','term'] #address
     ohe = OneHotEncoder(handle_unknown='ignore')
     ohe.fit(X_train[ohe_cols])
     X_train_enc = pd.DataFrame(ohe.transform(X_train[ohe_cols]).
@@ -281,10 +306,7 @@ hyper_tune='no'):
 
         #Runs the model normally
         else:
-            model_class = xgb.XGBClassifier(use_label_encoder=False,
-            eval_metric='logloss',subsample= 0.6, n_estimators= 500,
-             max_depth= 5, learning_rate= 0.01, colsample_bytree= 0.7,
-              colsample_bylevel= 0.7999999999999999) 
+            model_class = xgb.XGBClassifier(scale_pos_weight=scale_pos_ratio) 
             model_class.fit(X_train,np.ravel(y_train))
 
             #Plotting feature importance 
@@ -310,7 +332,7 @@ hyper_tune='no'):
     return model_class
     
 #Running the function
-model_class=get_model_class(model_type='xgb',hyper_tune='no')
+model_class=get_model_class(model_type='xgb',hyper_tune='no',sampling='no')
 
 #Dumping the model to be used for the app.py file. Comment out only
 #  if intending to run app.py
@@ -345,7 +367,7 @@ pred_value=['recoveries'],hyper_tune='no'):
 
     #One-hot Encoding
     ohe_cols=['purpose','verification_status','home_ownership',
-    'initial_list_status','address','term']
+    'initial_list_status','term'] #address
     ohe = OneHotEncoder(handle_unknown='ignore')
     ohe.fit(X_train[ohe_cols])
     X_train_enc = pd.DataFrame(ohe.transform(X_train[ohe_cols]).toarray(),
@@ -478,7 +500,7 @@ pred_value=['int_rate'],hyper_tune='no'):
     df = pd.read_csv('data/'+data_file,usecols=features+pred_value) 
 
     #Creating X and y variables for input and output
-    X=df.drop([pred_value[0],'address'],axis=1)
+    X=df.drop([pred_value[0]],axis=1)
     y=df[pred_value[0]]
 
     #Splitting the data into train and test
