@@ -34,9 +34,9 @@ data_file='wrang_xyz_data.csv'
 #Splitting the data into different categories that make sense
 loan_data=['purpose','initial_list_status','term','loan_amnt']
 emp_data=['emp_length','collections_12_mths_ex_med','acc_now_delinq',
-'home_ownership','annual_inc','verification_status','address','delinq_2yrs',
+'home_ownership','annual_inc','verification_status','delinq_2yrs',
 'inq_last_6mths','open_acc','pub_rec','total_acc','earliest_cr_line','dti',
-'tot_cur_bal','tot_coll_amt']
+'tot_cur_bal','tot_coll_amt'] #address
 
 #The following inputs are left out as they are only useful for problem 1.
 #out=['last_pymnt_d','last_credit_pull_d','recoveries','collection_recovery_fee',
@@ -77,7 +77,7 @@ def get_model_clus(data_file='wrang_xyz_data.csv',pred_value=['grade']):
 
     #One-hot Encoding
     ohe_cols=['purpose','verification_status','home_ownership'
-    ,'initial_list_status','address','term']
+    ,'initial_list_status','term'] #address
     ohe = OneHotEncoder(handle_unknown='ignore')
     ohe.fit(X_train[ohe_cols])
     X_train_enc = pd.DataFrame(ohe.transform(X_train[ohe_cols]).
