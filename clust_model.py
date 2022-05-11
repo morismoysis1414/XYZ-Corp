@@ -1,5 +1,5 @@
 # Clustering Model
-#A python file that predicts loan grade for Problem 2
+#A python file that predicts loan grade for Problem 2 using KNN
 
 #Imports
 
@@ -59,10 +59,17 @@ def get_model_clus(data_file='wrang_xyz_data.csv',pred_value=['grade']):
     X=df.drop(pred_value[0],axis=1)
     y=df[pred_value[0]]
 
+    X_scale=X.drop(['purpose','verification_status','home_ownership',
+    'initial_list_status','term'],axis=1)
+    X_non_scale=X[['purpose','verification_status','home_ownership',
+    'initial_list_status','term']]
+
     #Scaling the data
     scaler = StandardScaler()
-    scaler.fit(X)
-    X = scaler.transform(X)
+    scaler.fit(X_scale)
+    X_scale = pd.DataFrame(scaler.transform(X_scale),index=X.index,
+    columns=X_scale.columns)
+    X=X_scale.join(X_non_scale)
 
     #Splitting the data into train and test
     X_train, X_test, y_train, y_test = train_test_split(X, y, 

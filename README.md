@@ -14,8 +14,11 @@ problem1_model.ipynb - A notebook for problem1.py
 problem2.py - This model assumes the following problem. A credit risk analyst is using previous loan data to predict if a new loan from a new or existing customer will go default, calculate its recoveries if default and calculate an interest rate for the loan. The main difference between this and model1 is that model2 does not include certain inputs for its prediction and also predicts intrest rate. It includes two classification models, one predicting if the loan will be default ('default_ind'), and one for recoveries being zero or non-zero, one regression model predicting the value of the non-zero recoveries and one regression model predicting interest rate.
 problem2_model.ipynb - A notebook for problem2.py
 
-clust_model.py - This model attempts to predict the grade of the loan for Problem 2.
+clust_model.py - This model attempts to predict the grade of the loan for Problem 2 using KNN.
 clust_model.ipynb - A notebook for clust_model.py
+
+unsupervised.py - This model attempts to predict the grade of the loan for Problem 2 using unsupervised learning and K-Means-Square.
+unsupervised.ipynb - A notebook for unsupervised.py
 
 nlp_model.py - This model attempts to predict the purpose of the loan based on the description given by its borrower.
 nlp_model.ipynb - A notebook for nlp_model.py
