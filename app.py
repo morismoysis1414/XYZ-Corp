@@ -4,6 +4,7 @@ import logging
 import pickle
 import json
 import pandas as pd
+from sklearn.preprocessing import OneHotEncoder
 
 
 logging.basicConfig(filename='dump.log', level=logging.INFO)
@@ -20,6 +21,15 @@ def predict_loan():
   
     #Creating dataframe
     df=pd.DataFrame.from_records([data])
+
+    ohe_cols=['purpose','verification_status','home_ownership','initial_list_status','term'] #address
+    ohe = OneHotEncoder(handle_unknown='ignore')
+    ohe.fit(df[ohe_cols])
+    df_enc = pd.DataFrame(ohe.transform(df[ohe_cols]).toarray(),index=df.index)
+    df=df.join(df_enc).drop(ohe_cols,axis=1)
+    df.columns = df.columns.map(str)
+
+    print(df)
 
     #Unpickling classification model predicting default index
     model_class_def = pickle.load(open('model_class_def', 'rb'))
