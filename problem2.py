@@ -108,6 +108,7 @@ model_type='xgb',hyper_tune='no',sampling='no'):
         'initial_list_status','term'] #adress
         ohe = OneHotEncoder(handle_unknown='ignore')
         ohe.fit(X_train[ohe_cols])
+        #pickle.dump(ohe,open('ohe_class_def','wb'))
         X_train_enc = pd.DataFrame(ohe.transform(X_train[ohe_cols]).
         toarray(),index=X_train.index)
         X_train=X_train.join(X_train_enc).drop(ohe_cols,axis=1)
@@ -266,6 +267,7 @@ hyper_tune='no',sampling='no'):
     'initial_list_status','term'] #address
     ohe = OneHotEncoder(handle_unknown='ignore')
     ohe.fit(X_train[ohe_cols])
+    #pickle.dump(ohe,open('ohe_class_rec','wb'))
     X_train_enc = pd.DataFrame(ohe.transform(X_train[ohe_cols]).
     toarray(),index=X_train.index)
     X_train=X_train.join(X_train_enc).drop(ohe_cols,axis=1)
@@ -370,6 +372,7 @@ pred_value=['recoveries'],hyper_tune='no'):
     'initial_list_status','term'] #address
     ohe = OneHotEncoder(handle_unknown='ignore')
     ohe.fit(X_train[ohe_cols])
+    #pickle.dump(ohe,open('ohe_reg_rec','wb'))
     X_train_enc = pd.DataFrame(ohe.transform(X_train[ohe_cols]).toarray(),
     index=X_train.index)
     X_train=X_train.join(X_train_enc).drop(ohe_cols,axis=1)
@@ -512,6 +515,7 @@ pred_value=['int_rate'],hyper_tune='no'):
     'initial_list_status','term']
     ohe = OneHotEncoder(handle_unknown='ignore')
     ohe.fit(X_train[ohe_cols])
+    #pickle.dump(ohe,open('ohe_reg_int','wb'))
     X_train_enc = pd.DataFrame(ohe.transform(X_train[ohe_cols])
     .toarray(),index=X_train.index)
     X_train=X_train.join(X_train_enc).drop(ohe_cols,axis=1)
