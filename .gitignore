@@ -4,6 +4,10 @@ model_class_def
 model_class_rec
 model_reg_rec
 model_reg_int
+ohe_class_def
+ohe_class_rec
+ohe_reg_rec
+ohe_reg_int
 xyz_corp_venv
 /data/XYZCorp_LendingData.txt
 /data/XYZCorp_LendingData.xlsx
