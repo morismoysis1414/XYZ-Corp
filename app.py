@@ -26,18 +26,18 @@ def predict_loan():
     ohe_cols=['purpose','verification_status','home_ownership','initial_list_status','term'] #address
     ohe_class_def=pickle.load(open('ohe_class_def', 'rb'))
     df_enc = pd.DataFrame(ohe_class_def.transform(df[ohe_cols]).toarray(),index=df.index)
-    df=df.join(df_enc).drop(ohe_cols,axis=1)
-    df.columns = df.columns.map(str)
-    prediction_class_def=model_class_def.predict(df)
+    df_class_def=df.join(df_enc).drop(ohe_cols,axis=1)
+    df_class_def.columns = df_class_def.columns.map(str)
+    prediction_class_def=model_class_def.predict(df_class_def)
 
     #Unpickling regression model predicting interest rate
-    df=pd.DataFrame.from_records([data])
+    #df=pd.DataFrame.from_records([data])
     model_reg_int=pickle.load(open('model_reg_int', 'rb'))
     ohe_reg_int=pickle.load(open('ohe_reg_int', 'rb'))
     df_enc = pd.DataFrame(ohe_reg_int.transform(df[ohe_cols]).toarray(),index=df.index)
-    df=df.join(df_enc).drop(ohe_cols,axis=1)
-    df.columns = df.columns.map(str)
-    prediction_reg_int=model_reg_int.predict(df)
+    df_reg_int=df.join(df_enc).drop(ohe_cols,axis=1)
+    df_reg_int.columns = df_reg_int.columns.map(str)
+    prediction_reg_int=model_reg_int.predict(df_reg_int)
     intr_rate=prediction_reg_int[0]
 
 
@@ -46,25 +46,25 @@ def predict_loan():
         loan='Loan will go default'
 
         #Unpickling classification model predicting zero or non-zero recoveries
-        df=pd.DataFrame.from_records([data])
+        #df=pd.DataFrame.from_records([data])
         model_class_rec = pickle.load(open('model_class_rec', 'rb'))
         ohe_class_rec=pickle.load(open('ohe_class_rec', 'rb'))
         df_enc = pd.DataFrame(ohe_class_rec.transform(df[ohe_cols]).toarray(),index=df.index)
-        df=df.join(df_enc).drop(ohe_cols,axis=1)
-        df.columns = df.columns.map(str)
-        prediction_class_rec=model_class_rec.predict(df)
+        df_class_rec=df.join(df_enc).drop(ohe_cols,axis=1)
+        df_class_rec.columns = df_class_rec.columns.map(str)
+        prediction_class_rec=model_class_rec.predict(df_class_rec)
 
         #Getting non-zero recoveries case
         if prediction_class_rec[0]==1:
 
             #Unpickling regression model predicting recoveries
-            df=pd.DataFrame.from_records([data])
+            #df=pd.DataFrame.from_records([data])
             model_reg_rec = pickle.load(open('model_reg_rec', 'rb'))
             ohe_reg_rec=pickle.load(open('ohe_reg_rec', 'rb'))
             df_enc = pd.DataFrame(ohe_reg_rec.transform(df[ohe_cols]).toarray(),index=df.index)
-            df=df.join(df_enc).drop(ohe_cols,axis=1)
-            df.columns = df.columns.map(str)
-            prediction_reg_rec=model_reg_rec.predict(df)
+            df_reg_rec=df.join(df_enc).drop(ohe_cols,axis=1)
+            df_reg_rec.columns = df_reg_rec.columns.map(str)
+            prediction_reg_rec=model_reg_rec.predict(df_reg_rec)
             recoveries=prediction_reg_rec[0]
 
         #Getting zero recoveries case
