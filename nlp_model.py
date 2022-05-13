@@ -17,7 +17,8 @@ import seaborn as sns
 import string
 from nltk.corpus import stopwords
 
-#ML
+#Other
+import pickle
 
 #General
 from sklearn.pipeline import Pipeline

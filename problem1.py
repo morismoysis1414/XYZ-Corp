@@ -17,7 +17,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-#ML
+#Other
+import pickle
 
 #General
 from imblearn.under_sampling import RandomUnderSampler
@@ -53,7 +54,8 @@ emp_data=['emp_length','collections_12_mths_ex_med','acc_now_delinq',
 'tot_coll_amt','tot_cur_bal','revol_util'] #address
 out=['last_pymnt_amnt','total_pymnt','total_rec_int','int_rate','out_prncp',
 'total_rec_late_fee']
-
+ohe_cols=['purpose','verification_status','home_ownership',
+'initial_list_status','term'] #address
 #Getting the features that will be included in the model
 features=loan_data+emp_data+out
 #out_old=['last_pymnt_d','last_credit_pull_d','recoveries',
@@ -65,6 +67,27 @@ features=loan_data+emp_data+out
 #  wrangled data file, the way to train test split
 #date does it according to  date, otherwise it is random and the algorithm
 #  used for the model 
+
+def one_hot_encode(x_train,x_test,ohe_cols=ohe_cols,pickled='no',ohe_name=''):
+        ohe = OneHotEncoder(handle_unknown='ignore')
+        ohe.fit(x_train[ohe_cols])
+
+        if pickled=='yes':
+                pickle.dump(ohe,open(ohe_name,'wb'))
+        else:
+                pass
+                
+        x_train_enc = pd.DataFrame(ohe.transform(x_train[ohe_cols]).toarray(),
+        index=x_train.index)
+        x_train=x_train.join(x_train_enc).drop(ohe_cols,axis=1)
+        x_train.columns = x_train.columns.map(str)
+
+        x_test_enc = pd.DataFrame(ohe.transform(x_test[ohe_cols]).toarray(),
+        index=x_test.index)
+        x_test=x_test.join(x_test_enc).drop(ohe_cols,axis=1)
+        x_test.columns = x_test.columns.map(str)
+
+        return x_train,x_test
 
 def get_model_class(data_file='wrang_xyz_data.csv',split='date',
 model_type='xgb',sampling='no'):
@@ -99,18 +122,8 @@ model_type='xgb',sampling='no'):
             scale_pos_ratio=(0.15*scale_pos_ratio+0.85*sqrt_scale_pos_ratio)
 
         #One-hot Encoding
-        ohe_cols=['purpose','verification_status','home_ownership',
-        'initial_list_status','term'] #address
-        ohe = OneHotEncoder(handle_unknown='ignore')
-        ohe.fit(X_train[ohe_cols])
-        X_train_enc = pd.DataFrame(ohe.transform(X_train[ohe_cols]).
-        toarray(),index=X_train.index)
-        X_train=X_train.join(X_train_enc).drop(ohe_cols,axis=1)
-        X_train.columns = X_train.columns.map(str)
-        X_test_enc = pd.DataFrame(ohe.transform(X_test[ohe_cols]).
-        toarray(),index=X_test.index)
-        X_test=X_test.join(X_test_enc).drop(ohe_cols,axis=1)
-        X_test.columns = X_test.columns.map(str)
+        X_train,X_test=one_hot_encode(X_train,X_test,
+        pickled='no',ohe_name='ohe_class_def')
 
     #Selecting train test split method to be done based on date
     else:
@@ -131,18 +144,8 @@ model_type='xgb',sampling='no'):
         X_test,y_test = undersample.fit_resample(X_test, y_test)
 
         #One-hot Encoding
-        ohe_cols=['purpose','verification_status','home_ownership',
-        'initial_list_status','term'] #address
-        ohe = OneHotEncoder(handle_unknown='ignore')
-        ohe.fit(X_train[ohe_cols])
-        X_train_enc = pd.DataFrame(ohe.transform(X_train[ohe_cols]).
-        toarray(),index=X_train.index)
-        X_train=X_train.join(X_train_enc).drop(ohe_cols,axis=1)
-        X_train.columns = X_train.columns.map(str)
-        X_test_enc = pd.DataFrame(ohe.transform(X_test[ohe_cols]).
-        toarray(),index=X_test.index)
-        X_test=X_test.join(X_test_enc).drop(ohe_cols,axis=1)
-        X_test.columns = X_test.columns.map(str)
+        X_train,X_test=one_hot_encode(X_train,X_test,
+        pickled='no',ohe_name='ohe_class_def')
 
     #Selecting xgboost algorithm
     if model_type=='xgb':
@@ -220,18 +223,8 @@ def get_model_class(data_file='wrang_xyz_data.csv',model_type='xgb',sampling='no
         scale_pos_ratio=(0.15*scale_pos_ratio+0.85*sqrt_scale_pos_ratio)
 
     #One-hot Encoding
-    ohe_cols=['purpose','verification_status','home_ownership',
-    'initial_list_status','term'] #address
-    ohe = OneHotEncoder(handle_unknown='ignore')
-    ohe.fit(X_train[ohe_cols])
-    X_train_enc = pd.DataFrame(ohe.transform(X_train[ohe_cols]).
-    toarray(),index=X_train.index)
-    X_train=X_train.join(X_train_enc).drop(ohe_cols,axis=1)
-    X_train.columns = X_train.columns.map(str)
-    X_test_enc = pd.DataFrame(ohe.transform(X_test[ohe_cols]).
-    toarray(),index=X_test.index)
-    X_test=X_test.join(X_test_enc).drop(ohe_cols,axis=1)
-    X_test.columns = X_test.columns.map(str)
+    X_train,X_test=one_hot_encode(X_train,X_test,
+    pickled='no',ohe_name='ohe_class_rec')
 
     #Selecting xgboost algorithm
     if model_type=='xgb':
@@ -290,18 +283,8 @@ pred_value=['recoveries'],hyper_tune='no'):
      train_size=0.75, test_size=0.25)
 
     #One-hot Encoding
-    ohe_cols=['purpose','verification_status','home_ownership',
-    'initial_list_status','term'] #address
-    ohe = OneHotEncoder(handle_unknown='ignore')
-    ohe.fit(X_train[ohe_cols])
-    X_train_enc = pd.DataFrame(ohe.transform(X_train[ohe_cols]).
-    toarray(),index=X_train.index)
-    X_train=X_train.join(X_train_enc).drop(ohe_cols,axis=1)
-    X_train.columns = X_train.columns.map(str)
-    X_test_enc = pd.DataFrame(ohe.transform(X_test[ohe_cols]).
-    toarray(),index=X_test.index)
-    X_test=X_test.join(X_test_enc).drop(ohe_cols,axis=1)
-    X_test.columns = X_test.columns.map(str)
+    X_train,X_test=one_hot_encode(X_train,X_test,
+    pickled='no',ohe_name='ohe_reg_rec')
    
     #Selecting xgboost algorithm
     if model_type=='xgb':

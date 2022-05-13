@@ -6,12 +6,15 @@ model_reg_rec
 model_reg_int
 model_unsup
 model_nlp
+model_clust
 ohe_class_def
 ohe_class_rec
 ohe_reg_rec
 ohe_reg_int
 ohe_unsup
+ohe_clust
 scaler_unsup
+scaler_clust
 vect_nlp
 xyz_corp_venv
 /data/XYZCorp_LendingData.txt
