@@ -180,8 +180,8 @@ model_type='xgb',hyper_tune='no',sampling='no'):
 
         #Runs the model normally
         else:
-
-            model_class = xgb.XGBClassifier(scale_pos_weight=scale_pos_ratio) #use_label_encoder=False,
+            model_class = lgb.LGBMClassifier(scale_pos_weight=scale_pos_ratio)
+            #model_class = xgb.XGBClassifier(scale_pos_weight=scale_pos_ratio) #use_label_encoder=False,
             #eval_metric='logloss',subsample= 0.7999999999999999,
             #  n_estimators= 500,
             #  max_depth= 15, learning_rate= 0.01, colsample_bytree= 0.5,
@@ -297,7 +297,8 @@ hyper_tune='no',sampling='no'):
 
         #Runs the model normally
         else:
-            model_class = xgb.XGBClassifier(scale_pos_weight=scale_pos_ratio) 
+            model_class = lgb.LGBMClassifier(scale_pos_weight=scale_pos_ratio)
+            #model_class = xgb.XGBClassifier(scale_pos_weight=scale_pos_ratio) 
             model_class.fit(X_train,np.ravel(y_train))
 
             #Plotting feature importance 
@@ -398,7 +399,8 @@ pred_value=['recoveries'],hyper_tune='no'):
 
            #Running xgboost model for different parameter combinations
            #  based on negative mean squared error
-            model_reg = xgb.XGBRegressor() 
+            model_reg=lgb.LGBMRegressor(max_depth=5,learning_rate=0.01,colsample_bytree=0.6,n_estimators=500,subsample= 0.8999999999999999,colsample_bylevel=0.4)
+            #model_reg = xgb.XGBRegressor() 
             model_reg = GridSearchCV(estimator=model_reg, 
                             param_grid=params,
                             scoring='neg_mean_squared_error', 
@@ -547,7 +549,8 @@ pred_value=['int_rate'],hyper_tune='no'):
 
         #Runs the model normall
         else:
-            model_reg = xgb.XGBRegressor() #max_depth=3,learning_rate=0.01
+            model_reg=lgb.LGBMRegressor()
+            #model_reg = xgb.XGBRegressor() #max_depth=3,learning_rate=0.01
             #,colsample_bytree=0.7,n_estimators=100
             model_reg.fit(X_train,np.ravel(y_train))
 
