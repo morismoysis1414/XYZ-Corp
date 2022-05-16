@@ -30,7 +30,7 @@ def predict_loan():
     df=pd.DataFrame.from_records([data])
     df_nlp=df['desc']
     df=df.drop('desc',axis=1)
-
+    
     def one_hot_encode(ohe_name,df=df,ohe_cols=ohe_cols):
         ohe_model=pickle.load(open(ohe_name, 'rb'))
         df_enc = pd.DataFrame(ohe_model.transform(df[ohe_cols]).toarray(),
@@ -51,6 +51,7 @@ def predict_loan():
     vect_nlp=pickle.load(open('vect_nlp', 'rb'))
     df_nlp=vect_nlp.transform(df_nlp)
     prediction_nlp=model_nlp.predict(df_nlp)[0]
+    df['purpose']=prediction_nlp
 
     clust={0:'A',1:'B',2:'C',3:'D',4:'E',5:'F',6:'G'}
 
@@ -59,7 +60,6 @@ def predict_loan():
     model_class_def = pickle.load(open('model_class_def', 'rb'))
     df_class_def=one_hot_encode('ohe_class_def')
     prediction_class_def=model_class_def.predict(df_class_def)
-
     #Unpickling regression model predicting interest rate
     model_reg_int=pickle.load(open('model_reg_int', 'rb'))
     df_reg_int=one_hot_encode('ohe_reg_int')
@@ -107,7 +107,7 @@ def predict_loan():
         #Getting outcome
         outcome={'Loan Prediction: ':loan,'Recoveries: ':str(recoveries)
         ,'Predicted Interest Rate: ':str(intr_rate), 'Grade':clust[grade],
-        'Predicted Purpose':str(prediction_nlp)
+        'Purpose':str(prediction_nlp)
         } 
 
     #Getting non-default loan case    
@@ -116,7 +116,7 @@ def predict_loan():
 
         #Getting outcome
         outcome={'Loan Prediction: ':loan,'Predicted Interest Rate: ':str(intr_rate),
-        'Grade':clust[grade],'Predicted Purpose':str(prediction_nlp)} 
+        'Grade':clust[grade],'Purpose':str(prediction_nlp)} 
 
     #Dumping outcome to JSON 
     return json.dumps(outcome)
