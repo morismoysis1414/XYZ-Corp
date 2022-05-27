@@ -203,3 +203,4 @@ def get_model_clus(data_file='wrang_xyz_data.csv',pred_value=['grade']):
     
 #Running the function 
 model_clus=get_model_clus(pred_value=['sub_grade'])
+#pickle.dump(model_clus,open('model_clust','wb'))

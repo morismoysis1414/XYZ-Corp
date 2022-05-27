@@ -103,3 +103,4 @@ def get_model_unsup(data_file='wrang_xyz_data.csv',pred_value=['grade']):
     return model_unsup
 #Running the function 
 model_unsup=get_model_unsup(pred_value=['grade'])
+#pickle.dump(model_unsup,open('model_unsup','wb'))

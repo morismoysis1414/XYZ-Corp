@@ -72,4 +72,4 @@ def wrangle_data(file='data/xyz_corp_lending_data.csv'):
     return df
 
 #Running the function 
-wrangle_data()#.to_csv('data/wrang_xyz_data.csv',index=False)
+wrangle_data().to_csv('data/wrang_xyz_data.csv',index=False)

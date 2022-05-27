@@ -105,3 +105,4 @@ def get_model_nlp(method='initial'):
 
 #Running the function 
 model_nlp=get_model_nlp(method='initial')
+#pickle.dump(model_nlp,open('model_nlp','wb'))
