@@ -28,7 +28,7 @@ import pickle
 #General
 from imblearn.under_sampling import RandomUnderSampler
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import confusion_matrix,classification_report,accuracy_score, roc_curve, roc_auc_score, auc
+from sklearn.metrics import confusion_matrix,classification_report,roc_curve,roc_auc_score
 from sklearn.model_selection import RandomizedSearchCV, GridSearchCV
 import sklearn.metrics as metrics
 from sklearn.metrics import mean_squared_error, mean_absolute_error

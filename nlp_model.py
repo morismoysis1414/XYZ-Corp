@@ -23,7 +23,7 @@ import pickle
 #General
 from sklearn.pipeline import Pipeline
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import confusion_matrix,classification_report
+from sklearn.metrics import classification_report
 
 #NLP - Related
 from sklearn.feature_extraction.text import CountVectorizer
@@ -36,18 +36,6 @@ df=pd.read_csv('data/xyz_corp_lending_data.csv',sep='\t')
 #Including only the non-na data for desc and getting only the
 #  desc and purpose columns
 df=df[df['desc'].isna()==False][['desc','purpose']]
-
-#Encoding the purpose values
-#df[['purpose']] = df[['purpose']].astype('category').
-# apply(lambda x: x.cat.codes)
-
-#Using only the 2 highest purpose values
-#df=df[(df['purpose']==2)|(df['purpose']==1)]
-#df['purpose']=df['purpose'].replace(2,0)
-
-#Improving the desc values. Commented as did not make any difference
-#df['desc']=df['desc'].apply(lambda x: x.split('>')[1][:-4]
-#  if x[-4:]=='<br>' else x)
 
 #A function that takes in a string of text, then remove all punctuation,
 #  removes all stopwords, returns a list of the cleaned text

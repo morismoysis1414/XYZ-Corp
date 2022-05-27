@@ -7,10 +7,6 @@
 import pandas as pd
 import numpy as np
 
-#Date
-import datetime as dt
-from datetime import datetime
-
 #Visualisation
 import matplotlib as mpl
 import matplotlib.pyplot as plt
@@ -23,7 +19,6 @@ import pickle
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix,classification_report
-from sklearn.preprocessing import LabelEncoder
 from sklearn.preprocessing import OneHotEncoder
 
 #knn
