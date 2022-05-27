@@ -1,5 +1,11 @@
 .ipynb_checkpoints
 dump.log
+clust_model.ipynb
+data_wrangling.ipynb
+nlp_model.ipynb
+problem1_model.ipynb
+problem2_model.ipynb
+unsupervised.ipynb
 model_class_def
 model_class_rec
 model_reg_rec
