@@ -19,6 +19,8 @@ nlp_model.py - This model attempts to predict the purpose of the loan based on t
 
 app.py - A Python file containing the steps to deploy Problem 2 models to API to be used by front-end.
 
+A respective jupyter notebook is included for each of the models as well.
+
 ## Before running any file
 Run the data_wrangling notebook to get the 'wrang_xyz_data.csv'.
 Before running app.py you should have run all the models for problem2_model and uncommented the last line of code using picke.dump.
