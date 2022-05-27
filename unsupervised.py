@@ -21,8 +21,8 @@ from sklearn.cluster import KMeans
 data_file='wrang_xyz_data.csv'
 
 #Splitting the data into different categories that make sense
-loan_data=['initial_list_status','term','loan_amnt'] #purpose
-emp_data=['emp_length','collections_12_mths_ex_med','acc_now_delinq',
+loan_data=['purpose','initial_list_status','term','loan_amnt'] #purpose
+emp_data=['emp_length','home_ownership','collections_12_mths_ex_med','acc_now_delinq',
 'annual_inc','verification_status','delinq_2yrs','inq_last_6mths',
 'open_acc','pub_rec','total_acc','earliest_cr_line','dti',
 'tot_cur_bal','tot_coll_amt'] #address,home_ownership
