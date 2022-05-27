@@ -42,7 +42,8 @@ def predict_loan():
     def scaler(scaler_name,df=df,ohe_cols=ohe_cols):
             df_scale=df.drop(ohe_cols,axis=1)
             scaler_model=pickle.load(open(scaler_name, 'rb'))
-            df_scaled = pd.DataFrame(scaler_model.transform(df_scale),index=df.index,columns=df_scale.columns)
+            df_scaled = pd.DataFrame(scaler_model.transform(df_scale),
+            index=df.index,columns=df_scale.columns)
             df_unsup=df_scaled.join(df[ohe_cols])
             return df_unsup
 

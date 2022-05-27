@@ -44,7 +44,8 @@ def one_hot_encode(x,ohe_cols=ohe_cols,pickled='no',ohe_name=''):
         else:
                 pass
                 
-        x_enc = pd.DataFrame(ohe.transform(x[ohe_cols]).toarray(),index=x.index)
+        x_enc = pd.DataFrame(ohe.transform(x[ohe_cols]).toarray(),
+        index=x.index)
         x=x.join(x_enc).drop(ohe_cols,axis=1)
         x.columns = x.columns.map(str)
 
@@ -60,7 +61,8 @@ def scaler(x,ohe_cols=ohe_cols,pickled='no',ohe_name=''):
         else:
                 pass
                 
-        X_scale = pd.DataFrame(scaler.transform(X_scale),index=x.index,columns=X_scale.columns)
+        X_scale = pd.DataFrame(scaler.transform(X_scale),
+        index=x.index,columns=X_scale.columns)
         x=X_scale.join(x[ohe_cols])
         return x
 

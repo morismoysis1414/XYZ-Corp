@@ -28,7 +28,7 @@ import pickle
 #General
 from imblearn.under_sampling import RandomUnderSampler
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import confusion_matrix,classification_report
+from sklearn.metrics import confusion_matrix,classification_report,accuracy_score, roc_curve, roc_auc_score, auc
 from sklearn.model_selection import RandomizedSearchCV, GridSearchCV
 import sklearn.metrics as metrics
 from sklearn.metrics import mean_squared_error, mean_absolute_error
@@ -44,6 +44,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LinearRegression
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.neighbors import KNeighborsRegressor
+import lightgbm as lgb
 import xgboost as xgb
 from sklearn.neural_network import MLPRegressor
 
@@ -121,8 +122,8 @@ model_type='xgb',hyper_tune='no',sampling='no'):
 
             scale_pos_ratio=len(y_train[y_train==0])/len(y_train[y_train==1])
             #print(scale_pos_ratio)
-            sqrt_scale_pos_ratio=np.sqrt(scale_pos_ratio)
-            scale_pos_ratio=(0.15*scale_pos_ratio+0.85*sqrt_scale_pos_ratio)
+            #sqrt_scale_pos_ratio=np.sqrt(scale_pos_ratio)
+            #scale_pos_ratio=(0.15*scale_pos_ratio+0.85*sqrt_scale_pos_ratio)
 
         #One-hot Encoding
         X_train,X_test=one_hot_encode(X_train,
@@ -205,8 +206,28 @@ model_type='xgb',hyper_tune='no',sampling='no'):
     #Predicting values and printing confusion matrix and classification report
     y_class_pred = model_class.predict(X_test)
     print('default_ind classification model')
-    print(confusion_matrix(y_test, y_class_pred))
+    print(confusion_matrix(y_test, y_class_pred,labels=[1,0]))
     print(classification_report(y_test, y_class_pred))
+
+    prob_default = model_class.predict_proba(X_test)[:,1]
+    false_auc = roc_auc_score(y_test, y_test.clip(upper = False))
+    model_auc = roc_auc_score(y_test, prob_default)
+
+    print('no defaults: roc auc = %.3f' % (false_auc))
+    print('model prediction: roc auc = %.3f' % (model_auc))
+
+
+    false_fpr, false_tpr, _ = roc_curve(y_test, y_test.clip(upper = False))
+    model_fpr, model_tpr, _ = roc_curve(y_test, prob_default)
+
+    plt.plot(false_fpr, false_tpr, linestyle = '--', label = 'no defaults')
+    plt.plot(model_fpr, model_tpr, marker = '.', label = 'model prediction')
+
+    plt.xlabel('false positive rate')
+    plt.ylabel('true positive rate')
+    plt.legend()
+    plt.show()
+
 
     return model_class
 
@@ -259,9 +280,9 @@ hyper_tune='no',sampling='no'):
 
         scale_pos_ratio=len(y_train[y_train==0])/len(y_train[y_train==1])
         #print(scale_pos_ratio)
-        sqrt_scale_pos_ratio=np.sqrt(scale_pos_ratio)
-        scale_pos_ratio=(0.15*scale_pos_ratio+0.85*sqrt_scale_pos_ratio)
-
+        #sqrt_scale_pos_ratio=np.sqrt(scale_pos_ratio)
+        #scale_pos_ratio=(0.15*scale_pos_ratio+0.85*sqrt_scale_pos_ratio)
+        scale_pos_ratio=1
     #One-hot Encoding
     X_train,X_test=one_hot_encode(X_train,
     X_test,pickled='no',ohe_name='ohe_class_rec')
@@ -318,8 +339,27 @@ hyper_tune='no',sampling='no'):
     #Predicting values and printing confusion matrix and classification report
     y_class_pred = model_class.predict(X_test)
     print('recoveries classification model')
-    print(confusion_matrix(y_test, y_class_pred))
+    print(confusion_matrix(y_test, y_class_pred,labels=[1,0]))
     print(classification_report(y_test, y_class_pred))
+
+    prob_default = model_class.predict_proba(X_test)[:,1]
+    false_auc = roc_auc_score(y_test, y_test.clip(upper = False))
+    model_auc = roc_auc_score(y_test, prob_default)
+
+    print('no defaults: roc auc = %.3f' % (false_auc))
+    print('model prediction: roc auc = %.3f' % (model_auc))
+
+
+    false_fpr, false_tpr, _ = roc_curve(y_test, y_test.clip(upper = False))
+    model_fpr, model_tpr, _ = roc_curve(y_test, prob_default)
+
+    plt.plot(false_fpr, false_tpr, linestyle = '--', label = 'no defaults')
+    plt.plot(model_fpr, model_tpr, marker = '.', label = 'model prediction')
+
+    plt.xlabel('false positive rate')
+    plt.ylabel('true positive rate')
+    plt.legend()
+    plt.show()
 
     return model_class
     
