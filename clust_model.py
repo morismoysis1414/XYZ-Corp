@@ -33,7 +33,8 @@ emp_data=['emp_length','collections_12_mths_ex_med','acc_now_delinq',
 'home_ownership','annual_inc','verification_status','delinq_2yrs',
 'inq_last_6mths','open_acc','pub_rec','total_acc','earliest_cr_line','dti',
 'tot_cur_bal','tot_coll_amt'] #address
-ohe_cols=['purpose','verification_status','home_ownership','initial_list_status','term'] #address
+ohe_cols=['purpose','verification_status',
+'home_ownership','initial_list_status','term'] #address
 #The following inputs are left out as they are only useful for problem 1.
 #out=['last_pymnt_d','last_credit_pull_d','recoveries','collection_recovery_fee',
 # 'last_pymnt_amnt','total_pymnt','total_rec_int','int_rate','out_prncp',
@@ -51,11 +52,13 @@ def one_hot_encode(x_train,x_test,ohe_cols=ohe_cols,pickled='no',ohe_name=''):
         else:
                 pass
                 
-        x_train_enc = pd.DataFrame(ohe.transform(x_train[ohe_cols]).toarray(),index=x_train.index)
+        x_train_enc = pd.DataFrame(ohe.transform(x_train[ohe_cols]).toarray(),
+        index=x_train.index)
         x_train=x_train.join(x_train_enc).drop(ohe_cols,axis=1)
         x_train.columns = x_train.columns.map(str)
 
-        x_test_enc = pd.DataFrame(ohe.transform(x_test[ohe_cols]).toarray(),index=x_test.index)
+        x_test_enc = pd.DataFrame(ohe.transform(x_test[ohe_cols]).toarray(),
+        index=x_test.index)
         x_test=x_test.join(x_test_enc).drop(ohe_cols,axis=1)
         x_test.columns = x_test.columns.map(str)
 
@@ -71,7 +74,8 @@ def scaler(x,ohe_cols=ohe_cols,pickled='no',ohe_name=''):
         else:
                 pass
                 
-        X_scale = pd.DataFrame(scaler.transform(X_scale),index=x.index,columns=X_scale.columns)
+        X_scale = pd.DataFrame(scaler.transform(X_scale),index=x.index,
+        columns=X_scale.columns)
         x=X_scale.join(x[ohe_cols])
         return x
 
@@ -101,7 +105,8 @@ def get_model_clus(data_file='wrang_xyz_data.csv',pred_value=['grade']):
     train_size=0.75, test_size=0.25)
 
     #One-hot Encoding
-    X_train,X_test=one_hot_encode(X_train,X_test,pickled='no',ohe_name='ohe_clust')
+    X_train,X_test=one_hot_encode(X_train,X_test,pickled='no',
+    ohe_name='ohe_clust')
 
     #Using the K-Neirghest-Neighours algorith for clustering
     model_clus = KNeighborsClassifier(n_neighbors=5)

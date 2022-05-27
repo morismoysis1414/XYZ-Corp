@@ -24,7 +24,8 @@ def predict_loan():
     req_j=request.json
     data=req_j
 
-    ohe_cols=['purpose','verification_status','home_ownership','initial_list_status','term'] #address
+    ohe_cols=['purpose','verification_status',
+    'home_ownership','initial_list_status','term'] #address
 
     #Creating dataframe
     df=pd.DataFrame.from_records([data])
@@ -116,7 +117,8 @@ def predict_loan():
         loan='Loan will not go default'
 
         #Getting outcome
-        outcome={'Loan Prediction: ':loan,'Predicted Interest Rate: ':str(intr_rate),
+        outcome={'Loan Prediction: ':loan,
+        'Predicted Interest Rate: ':str(intr_rate),
         'Grade':clust[grade],'Purpose':str(prediction_nlp)} 
 
     #Dumping outcome to JSON 

@@ -439,7 +439,9 @@ pred_value=['recoveries'],hyper_tune='no'):
 
            #Running xgboost model for different parameter combinations
            #  based on negative mean squared error
-            model_reg=lgb.LGBMRegressor(max_depth=5,learning_rate=0.01,colsample_bytree=0.6,n_estimators=500,subsample= 0.8999999999999999,colsample_bylevel=0.4)
+            model_reg=lgb.LGBMRegressor(max_depth=5,
+            learning_rate=0.01,colsample_bytree=0.6,n_estimators=500,
+            subsample= 0.8999999999999999,colsample_bylevel=0.4)
             #model_reg = xgb.XGBRegressor() 
             model_reg = GridSearchCV(estimator=model_reg, 
                             param_grid=params,

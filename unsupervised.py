@@ -26,7 +26,8 @@ emp_data=['emp_length','collections_12_mths_ex_med','acc_now_delinq',
 'annual_inc','verification_status','delinq_2yrs','inq_last_6mths',
 'open_acc','pub_rec','total_acc','earliest_cr_line','dti',
 'tot_cur_bal','tot_coll_amt'] #address,home_ownership
-ohe_cols=['purpose','verification_status','home_ownership','initial_list_status','term'] #address
+ohe_cols=['purpose','verification_status',
+'home_ownership','initial_list_status','term'] #address
 #The following inputs are left out as they are only useful for problem 1.
 #out=['last_pymnt_d','last_credit_pull_d','recoveries',
 # 'collection_recovery_fee','last_pymnt_amnt','total_pymnt','total_rec_int',
